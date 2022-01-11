@@ -8,6 +8,7 @@ from omegaconf import DictConfig
 from pytorch_lightning import LightningModule
 from torch.nn import Module
 from torch.optim import Optimizer
+from torch_geometric.data import Data
 
 from datamodule import DatasetSplit
 from logger.utils import Metrics
@@ -57,3 +58,27 @@ class DefaultClassificationLoop(AbstractBaseLoop):
         x, y_true = batch
         y_pred = self.model(x)
         self.metrics.metric_log(self, y_pred, y_true, DatasetSplit.TEST)
+
+
+class NodeClassification(DefaultClassificationLoop):
+    def training_step(self, data: Data, batch_idx):
+        x, edge_idx, y_true = data.x, data.edge_index, data.y
+        y_pred = self.model(x, edge_idx)
+
+        loss = self.metrics.metric_log(self,
+                                       y_pred[data.train_mask],
+                                       y_true[data.train_mask],
+                                       DatasetSplit.TRAIN)
+        return {'loss': loss}
+
+    def validation_step(self, data: Data, batch_idx):
+        x, edge_idx, y_true = data.x, data.edge_index, data.y
+        y_pred = self.model(x, edge_idx)
+
+        self.metrics.metric_log(self, y_pred[data.val_mask], y_true[data.val_mask], DatasetSplit.VALIDATION)
+
+    def test_step(self, data: Data, batch_idx):
+        x, edge_idx, y_true = data.x, data.edge_index, data.y
+        y_pred = self.model(x, edge_idx)
+
+        self.metrics.metric_log(self, y_pred[data.test_mask], y_true[data.test_mask], DatasetSplit.TEST)
