@@ -10,7 +10,7 @@ random_seed: 1590258941
 
 training:
   epochs: 100
-  batch_size: 32
+  batch_size: 1
   accumulate_batches: 1
   # checkpointing
   save_ckpts: 10
@@ -19,7 +19,7 @@ training:
   patience: 5
 
 testing:
-  batch_size: 512
+  batch_size: 1
 
 metrics:
   # apply before passing to metrics
@@ -36,7 +36,7 @@ log_gradients: False
 
 hydra:
   run:
-    dir: ./outputs/single/${model._target_}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    dir: ./outputs/single/${datamodule.dataset._target_}/${now:%Y-%m-%d}/${now:%H-%M-%S}
 
   sweep:
     dir: outputs/sweep/${now:%Y-%m-%d}/${now:%H-%M-%S}

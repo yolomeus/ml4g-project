@@ -1,0 +1,5 @@
+defaults:
+  - dataset: cora
+
+_target_: datamodule.pyg_datamodule.PyGDataModule
+base_dir: ${hydra:runtime.cwd}/data/pyg/
