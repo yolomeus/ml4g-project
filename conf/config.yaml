@@ -1,7 +1,7 @@
 defaults:
   - model: mlp
-  - datamodule: fashion_mnist
-  - loop: default_loop
+  - datamodule: pyg_datamodule
+  - loop: node_classification
 
 
 gpus: 1

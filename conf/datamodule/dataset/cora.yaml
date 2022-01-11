@@ -1,0 +1,3 @@
+_target_: torch_geometric.datasets.Planetoid
+root: ${datamodule.base_dir}/cora
+name: Cora
