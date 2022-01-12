@@ -1,6 +1,7 @@
 import os
 
 import hydra
+import wandb
 from hydra.utils import instantiate
 from omegaconf import DictConfig
 from pytorch_lightning import Trainer, seed_everything
@@ -60,7 +61,8 @@ def train(cfg: DictConfig):
     trainer.fit(training_loop, datamodule=datamodule)
 
     # only look at this in the very end ;)
-    trainer.test(ckpt_path='best')
+    trainer.test(ckpt_path='best', datamodule=datamodule)
+    wandb.finish()
 
 
 if __name__ == '__main__':
