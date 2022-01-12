@@ -1,0 +1,9 @@
+_target_: model.gcn.FAGCN
+
+in_dim: ${datamodule.dataset.num_features}
+out_dim: ${datamodule.dataset.num_classes}
+
+n_layers: 4
+h_dim: 16
+dropout: 0.6
+eps: 0.2
