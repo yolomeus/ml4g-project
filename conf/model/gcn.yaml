@@ -1,0 +1,8 @@
+_target_: model.gcn.GCN
+
+in_dim: ${datamodule.dataset.num_features}
+out_dim: ${datamodule.dataset.num_classes}
+
+h_dim: 16
+dropout: 0.6
+
