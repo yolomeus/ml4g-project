@@ -1,5 +1,5 @@
 defaults:
-  - model: mlp
+  - model: fagcn
   - datamodule: pyg_datamodule
   - loop: node_classification
 
@@ -9,14 +9,14 @@ num_workers: 4
 random_seed: 1590258941
 
 training:
-  epochs: 100
+  epochs: 500
   batch_size: 1
   accumulate_batches: 1
   # checkpointing
-  save_ckpts: 10
+  save_ckpts: 1
   monitor: val/loss
   mode: min
-  patience: 5
+  patience: 100
 
 testing:
   batch_size: 1
@@ -27,7 +27,8 @@ metrics:
   metrics_list:
     - _target_: torchmetrics.Accuracy
     - _target_: torchmetrics.F1
-      num_classes: 10
+      average: 'macro'
+      num_classes: ${datamodule.dataset.num_classes}
 
 logger:
   _target_: logger.loggers.WandbMinMaxLogger
