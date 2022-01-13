@@ -14,9 +14,9 @@ training:
   accumulate_batches: 1
   # checkpointing
   save_ckpts: 1
-  monitor: val/loss
-  mode: min
-  patience: 100
+  monitor: val/accuracy
+  mode: max
+  patience: 200
 
 testing:
   batch_size: 1
