@@ -1,0 +1,5 @@
+_target_: datamodule.pyg_datamodule.WikipediaNetworkDataset
+root: ${datamodule.base_dir}/
+name: chameleon
+num_features: 128
+num_classes: 3

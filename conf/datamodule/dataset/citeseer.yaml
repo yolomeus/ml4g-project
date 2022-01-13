@@ -1,5 +1,5 @@
 _target_: datamodule.pyg_datamodule.PlanetoidDataset
 root: ${datamodule.base_dir}/
-name: Cora
-num_features: 1433
-num_classes: 7
+name: citeseer
+num_features: 3703
+num_classes: 6

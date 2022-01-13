@@ -1,0 +1,5 @@
+_target_: datamodule.pyg_datamodule.WikiActorDataset
+root: ${datamodule.base_dir}/actor
+name: actor
+num_features: 932
+num_classes: 5
