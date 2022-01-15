@@ -5,7 +5,7 @@ defaults:
 
 
 gpus: 1
-num_workers: 4
+num_workers: 0
 random_seed: 1590258941
 
 training:
@@ -14,8 +14,8 @@ training:
   accumulate_batches: 1
   # checkpointing
   save_ckpts: 1
-  monitor: val/accuracy
-  mode: max
+  monitor: val/loss
+  mode: min
   patience: 200
 
 testing:

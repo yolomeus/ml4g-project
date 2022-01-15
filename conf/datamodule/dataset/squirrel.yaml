@@ -1,4 +1,4 @@
-_target_: datamodule.pyg_datamodule.WikiRawDataset
+_target_: datamodule.dataset.WikiRawDataset
 root: ${datamodule.base_dir}/new_squirrel
 name: squirrel
 num_features: 3148

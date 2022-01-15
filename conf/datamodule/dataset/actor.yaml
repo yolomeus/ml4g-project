@@ -1,4 +1,4 @@
-_target_: datamodule.pyg_datamodule.WikiActorDataset
+_target_: datamodule.dataset.WikiActorDataset
 root: ${datamodule.base_dir}/actor
 name: actor
 num_features: 932

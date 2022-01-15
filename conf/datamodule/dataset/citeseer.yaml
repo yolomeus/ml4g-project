@@ -1,4 +1,4 @@
-_target_: datamodule.pyg_datamodule.PlanetoidDataset
+_target_: datamodule.dataset.PlanetoidDataset
 root: ${datamodule.base_dir}/
 name: citeseer
 num_features: 3703
