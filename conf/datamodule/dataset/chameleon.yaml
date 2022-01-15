@@ -1,5 +1,5 @@
-_target_: datamodule.pyg_datamodule.WikipediaNetworkDataset
-root: ${datamodule.base_dir}/
+_target_: datamodule.pyg_datamodule.WikiRawDataset
+root: ${datamodule.base_dir}/new_chameleon
 name: chameleon
-num_features: 128
+num_features: 3132
 num_classes: 3

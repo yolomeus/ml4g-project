@@ -1,8 +1,13 @@
+import os.path
+
+import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
-from torch_geometric.datasets import Planetoid, WikipediaNetwork, Actor
-from torch_geometric.transforms import BaseTransform, RandomNodeSplit, Compose
+from torch.utils.data.dataset import T_co
+from torch_geometric.data import Data
+from torch_geometric.datasets import Planetoid, Actor
+from torch_geometric.transforms import BaseTransform, RandomNodeSplit
 
 from datamodule.default_datamodule import AbstractDefaultDataModule
 
@@ -10,7 +15,7 @@ from datamodule.default_datamodule import AbstractDefaultDataModule
 class PyGDataModule(AbstractDefaultDataModule):
     """A datamodule for wrapping python-geometric Datasets. Returns a single graph """
 
-    def __init__(self, base_dir, dataset: Dataset, train_conf, test_conf, num_workers, pin_memory):
+    def __init__(self, base_dir, dataset, train_conf, test_conf, num_workers, pin_memory):
         super().__init__(train_conf, test_conf, num_workers, pin_memory)
 
         self.base_dir = base_dir
@@ -60,28 +65,30 @@ class PlanetoidDataset(Planetoid):
         self._num_classes = num_classes
 
 
-class WikipediaNetworkDataset(WikipediaNetwork):
+class WikiRawDataset(Dataset):
+
     def __init__(self, num_features: int, num_classes: int, root: str, name: str):
-        """
-
-        Args:
-            num_features:
-            num_classes:
-            root:
-            name:
-        """
-
-        WikipediaNetwork(root,
-                         name,
-                         geom_gcn_preprocess=False,
-                         pre_transform=Compose([RandomSplitTransform(num_classes), BucketizeTransform()]))
-        super().__init__(root,
-                         name,
-                         geom_gcn_preprocess=False,
-                         pre_transform=Compose([RandomSplitTransform(num_classes), BucketizeTransform()]))
-
         self._num_features = num_features
         self._num_classes = num_classes
+        self._name = name
+
+        edge_file = os.path.join(root, 'edges.txt')
+        feature_file = os.path.join(root, 'features.txt')
+        label_file = os.path.join(root, 'labels.txt')
+
+        edges = torch.tensor(pd.read_csv(edge_file, delimiter=' ', header=None).to_numpy().T, dtype=torch.long)
+        features = torch.tensor(pd.read_csv(feature_file, delimiter=' ', header=None).to_numpy(),
+                                dtype=torch.float32)
+        labels = torch.tensor(pd.read_csv(label_file, header=None).to_numpy(), dtype=torch.long).squeeze()
+
+        self.data = Data(features, edges, y=labels)
+        self.data = RandomSplitTransform(self._num_classes)(self.data)
+
+    def __getitem__(self, index) -> T_co:
+        return self.data
+
+    def __len__(self):
+        return 1
 
 
 class WikiActorDataset(Actor):
