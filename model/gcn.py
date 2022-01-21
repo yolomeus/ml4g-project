@@ -2,6 +2,7 @@ from torch.nn import Module, Linear, ModuleList, ReLU, Dropout
 from torch.nn import functional as F
 from torch.nn.init import xavier_normal_
 from torch_geometric.nn import GCNConv, FAConv
+from torch_geometric.utils import remove_self_loops
 
 
 class GCN(Module):
@@ -27,7 +28,7 @@ class FAGCN(Module):
     def __init__(self, in_dim, h_dim, out_dim, eps, dropout, n_layers):
         super().__init__()
         self.lin_in = Linear(in_dim, h_dim)
-        self.layers = ModuleList([FAConv(h_dim, eps, dropout)
+        self.layers = ModuleList([FAConv(h_dim, eps, dropout, add_self_loops=False)
                                   for _ in range(n_layers)])
         self.lin_out = Linear(h_dim, out_dim)
 
@@ -44,6 +45,8 @@ class FAGCN(Module):
             xavier_normal_(layer.att_r.weight, gain=1.414)
 
     def forward(self, x, edge_index):
+        # also removed in the original code
+        edge_index, _ = remove_self_loops(edge_index)
         x = self.dp(x)
         x = self.lin_in(x)
         x = self.act(x)
