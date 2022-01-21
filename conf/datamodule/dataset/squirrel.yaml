@@ -1,5 +1,5 @@
 _target_: datamodule.dataset.WikiRawDataset
-root: ${datamodule.base_dir}/new_squirrel
+root: ${datamodule.base_dir}/squirrel_3_classes
 name: squirrel
 num_features: 3148
 num_classes: 3

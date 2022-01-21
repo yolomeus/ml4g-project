@@ -1,5 +1,5 @@
 _target_: datamodule.dataset.WikiRawDataset
-root: ${datamodule.base_dir}/new_chameleon
+root: ${datamodule.base_dir}/chameleon_3_classes
 name: chameleon
 num_features: 3132
 num_classes: 3
