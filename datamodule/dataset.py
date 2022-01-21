@@ -1,4 +1,5 @@
 import os
+import pickle
 
 import pandas as pd
 import torch
@@ -19,7 +20,7 @@ class PlanetoidDataset(Planetoid):
             num_features: number of features for each node in the dataset.
             num_classes: number of target classes for each node.
         """
-        # Planetoid(root, name)  # don't ask
+
         super().__init__(root, name, **kwargs)
         self._num_features = num_features
         self._num_classes = num_classes
@@ -62,9 +63,27 @@ class WikiRawDataset(Dataset):
         self._num_classes = num_classes
         self._name = name
 
-        edge_file = os.path.join(root, 'edges.txt')
-        feature_file = os.path.join(root, 'features.txt')
-        label_file = os.path.join(root, 'labels.txt')
+        self.root = root
+        self.out_dir = os.path.join(root, 'processed/')
+        self.processed_file = os.path.join(self.out_dir, 'processed.pkl')
+
+        if not os.path.exists(self.processed_file):
+            self.preprocess()
+
+        with open(self.processed_file, 'rb') as fp:
+            self.data = pickle.load(fp)
+
+    def __getitem__(self, index) -> T_co:
+        return self.data
+
+    def __len__(self):
+        return 1
+
+    def preprocess(self):
+        os.makedirs(self.out_dir, exist_ok=True)
+        edge_file = os.path.join(self.root, 'raw/edges.txt')
+        feature_file = os.path.join(self.root, 'raw/features.txt')
+        label_file = os.path.join(self.root, 'raw/labels.txt')
 
         edges = torch.from_numpy(pd.read_csv(edge_file, delimiter=' ', header=None).to_numpy().T).long()
         features = torch.from_numpy(pd.read_csv(feature_file, delimiter=' ', header=None).to_numpy()).float()
@@ -73,8 +92,5 @@ class WikiRawDataset(Dataset):
         self.data = Data(features, edges, y=labels)
         self.data = RandomSplitTransform(self._num_classes)(self.data)
 
-    def __getitem__(self, index) -> T_co:
-        return self.data
-
-    def __len__(self):
-        return 1
+        with open(self.processed_file, 'wb') as fp:
+            pickle.dump(self.data, fp)
